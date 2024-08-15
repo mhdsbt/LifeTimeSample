@@ -11,34 +11,23 @@ Steps to Run
 **Clone the repository:**
 
 
-bash
-Copy code
+
 git clone https://github.com/your-username/LifeTimeCheck.git
 cd LifeTimeCheck
 Restore the dependencies and build the project:
 
-
-bash
-Copy code
 dotnet restore
 dotnet build
 Run the application:
 
-
-bash
-Copy code
 dotnet run
 Test the API by navigating to http://localhost:5000/lifetime in your browser or using a tool like Postman or curl.
 
 
 
-Example Request
-bash
-Copy code
+**Example Request**
 curl http://localhost:5000/lifetime
 Example Response
-json
-Copy code
 {
   "id": "some-generated-id"
 }
