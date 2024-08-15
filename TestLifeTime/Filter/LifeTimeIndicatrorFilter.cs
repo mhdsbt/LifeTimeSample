@@ -24,10 +24,8 @@ namespace TestLifeTime.Filter
         public void OnActionExecuted(ActionExecutedContext context)
         {
             var id = _idGenerator.Id;
-            
+
             _logger.LogInformation($"{nameof(OnActionExecuted)} id was:{id}");
         }
-
-
     }
 }

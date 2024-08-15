@@ -17,7 +17,7 @@ namespace TestLifeTime.Controllers
             _idGenerator = idGenerator;
         }
 
-        [HttpGet("lifetime")]
+        [HttpGet("lifetimegetid")]
         [ServiceFilter(typeof(LifeTimeIndicatrorFilter))]//i use this filter for life time check first OnActionExecuting run second run GetId at the end run  OnActionExecuted for show life time 
         public IActionResult GetId()
         {
@@ -25,8 +25,5 @@ namespace TestLifeTime.Controllers
 
             return Ok(id);
         }
-
-       
-
     }
 }
