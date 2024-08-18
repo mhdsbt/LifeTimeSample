@@ -1,3 +1,6 @@
+using OpenTelemetry.Logs;
+using OpenTelemetry.Resources;
+using Serilog;
 using TestLifeTime.Filter;
 using TestLifeTime.Service;
 
@@ -18,6 +21,51 @@ builder.Services.AddScoped<LifeTimeIndicatrorFilter>();
 
 builder.Services.AddScoped<IdGenerator>();
 //when Register IdGenerator As Scoped And call GetId , One  Guid Generate  for GetId Result and LifeTimeIndicatrorFilter. (With Each Request It Change) in ordre two scope mean use Same Instace in one scope.
+
+builder.Logging.ClearProviders();
+
+
+#region  add serilog for write to opentelemetry its same as openTelemetry that is
+
+builder.Services.AddSerilog();
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.OpenTelemetry(x =>
+    {
+        x.Endpoint = "http://localhost:5341/ingest/otlp/v1/logs";
+        x.Protocol = Serilog.Sinks.OpenTelemetry.OtlpProtocol.HttpProtobuf;
+        x.Headers = new Dictionary<string, string>
+        {
+            { "X-Seq-ApiKey", "WVoaY70JLl86NT2wqJQo" },
+        };
+        x.ResourceAttributes = new Dictionary<string, object>
+        {
+            ["Service.name"] = "LifeTimeService"
+        };
+    }).CreateLogger();
+#endregion
+
+//use opentelemtry log without serilog
+//builder.Logging.AddOpenTelemetry(
+
+//    x => x.AddOtlpExporter(a =>
+//    {
+//        x.SetResourceBuilder(ResourceBuilder.CreateEmpty()
+//            .AddService("LifetimeService")
+//            .AddAttributes(new Dictionary<string, object>()
+//            {
+//                ["deployment.envionment"] = builder.Environment.EnvironmentName
+//            }));
+
+//        x.IncludeScopes = true;
+//        x.IncludeFormattedMessage = true;
+
+//        a.Endpoint = new Uri("http://localhost:5341/ingest/otlp/v1/logs");
+//        a.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.HttpProtobuf;
+//        a.Headers = "X-Seq-ApiKey=WVoaY70JLl86NT2wqJQo";
+//    })
+//    );
 
 var app = builder.Build();
 
